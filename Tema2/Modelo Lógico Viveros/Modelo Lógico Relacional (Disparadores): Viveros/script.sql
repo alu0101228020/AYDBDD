@@ -147,16 +147,16 @@ CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas
 		END IF;
 		IF NEW.vivienda IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
 		END IF;
-		IF COUNT(NEW.vivienda) > 1 THEN
-			IF COUNT (DISTINCT NEW.municipio) = 1 THEN
-				RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
-			END IF; 
+		IF NEW.municipio IN (SELECT d.municipio
+					FROM DOMICILIO d
+					WHERE d.cliente_dni = NEW.cliente_dni) THEN
+					RAISE EXCEPTION 'No puede tener dos viviendas en el mismo municipio';
 		END IF;
 		RETURN NEW;
 		END;
 $check_viviendas$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_check_viviendas_before_insert BEFORE INSERT OR UPDATE ON CLIENTE FOR EACH ROW EXECUTE PROCEDURE check_viviendas();
+CREATE TRIGGER trigger_check_viviendas_before_insert BEFORE INSERT OR UPDATE ON DOMICILIO FOR EACH ROW EXECUTE PROCEDURE check_viviendas();
 
 CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_stock$
 	BEGIN
