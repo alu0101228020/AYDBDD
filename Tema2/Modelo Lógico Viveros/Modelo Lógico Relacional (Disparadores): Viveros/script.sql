@@ -130,20 +130,20 @@ FOR EACH ROW EXECUTE PROCEDURE crear_email("gmail.com");
 
 CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas$
 	BEGIN 
-		IF NEW.municipio IS NULL THEN RAISE EXCEPTION 'Municipio vacío'
+		IF NEW.municipio IS NULL THEN RAISE EXCEPTION 'Municipio vacío';
 		ENDIF;
-		IF NEW.vivienda IS NULL THEN RAISE EXCEPTION 'Vivienda vacía'
+		IF NEW.vivienda IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
 		ENDIF;
 		IF COUNT(NEW.vivienda) > 1 THEN
 			IF COUNT DISTINCT(NEW.municipio) = 1 THEN
-				RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio'
+				RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
 		ENDIF
 		IF EXISTS
 		SELECT NEW.municipio, COUNT(NEW.municipio)
 		FROM CLIENTE
 		GROUP BY NEW.municipio
 		HAVING COUNT(NEW.municipio)>1
-		THEN RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio'
+		THEN RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
 		ENDIF;
 		ENDIF;
 		END;
@@ -154,9 +154,9 @@ CREATE TRIGGER trigger_check_viviendas_before_insert BEFORE INSERT OR UPDATE ON 
 CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_stock$
 	BEGIN
 		IF NEW.cantidad > 0 THEN
-			UPDATE PRODUCTO
-			SET PRODUCTO.stock = PRODUCTO.stock-NEW.cantidad
-			WHERE PRODUCTO.idProductos = NEW.idProductos
+			UPDATE PRODUCTO,
+			SET PRODUCTO.stock = PRODUCTO.stock-NEW.cantidad,
+			WHERE PRODUCTO.idProductos = NEW.idProductos;
 		ENDIF;
 	END;
 $actualizar_stock$ LANGUAGE plpgsql;
