@@ -149,7 +149,7 @@ CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas
 		END;
 $check_viviendas$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_check_viviendsd BEFORE INSERT OR UPDATE ON CLIENTE FOR EACH ROW EXECUTE PROCEDURE check_viviendas();
+CREATE TRIGGER trigger_check_viviendas_before_insert BEFORE INSERT OR UPDATE ON CLIENTE FOR EACH ROW EXECUTE PROCEDURE check_viviendas();
 
 CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_stock$
 	BEGIN
