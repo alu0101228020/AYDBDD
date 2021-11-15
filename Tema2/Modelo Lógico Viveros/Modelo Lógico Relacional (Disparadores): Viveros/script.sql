@@ -135,16 +135,9 @@ CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas
 		IF NEW.vivienda IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
 		END IF;
 		IF COUNT(NEW.vivienda) > 1 THEN
-			IF COUNT(DISTINCT(NEW.municipio)) = 1 THEN
+			IF COUNT (DISTINCT NEW.municipio) = 1 THEN
 				RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
-		END IF;
-		IF EXISTS(
-		SELECT NEW.municipio, COUNT(NEW.municipio)
-		FROM CLIENTE
-		GROUP BY NEW.municipio
-		HAVING COUNT(NEW.municipio)>1)
-		THEN RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
-		END IF;
+			END IF; 
 		END IF;
 		END;
 $check_viviendas$ LANGUAGE plpgsql;
@@ -153,16 +146,15 @@ CREATE TRIGGER trigger_check_viviendas_before_insert BEFORE INSERT OR UPDATE ON 
 
 CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_stock$
 	BEGIN
-		IF NEW.cantidad > 0 THEN
-			UPDATE PRODUCTOS
-			SET stock = stock-NEW.cantidad
-			WHERE PRODUCTOS.idProductos = NEW.idProductos;
+		IF (NEW.cantidad > 0) THEN
+			UPDATE PRODUCTOS SET (stock) = (stock - NEW.cantidad)
+  			WHERE idProductos = NEW.idProductos;
 		END IF;
 	END;
 $actualizar_stock$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_actualizar_stock BEFORE INSERT ON COMPRA
-FOR EACH ROW EXECUTE PROCEDURE actualizr_stock();
+FOR EACH ROW EXECUTE PROCEDURE actualizar_stock();
 
 START TRANSACTION;
 INSERT INTO VIVEROS (NOMBRE, LOCALIDAD, LATITUD, LONGITUD) VALUES ('Flores Pepe', 'La Laguna', '026', '014');
@@ -175,7 +167,7 @@ INSERT INTO ZONA (NOMBRE, TIPO, VIVEROS_NOMBRE) VALUES ('Rodeos', 'Exterior', 'F
 COMMIT;
 
 START TRANSACTION;
-INSERT INTO PRODUCTOS(IDPRODUCTOS, NOMBRE, STOCK, PRECIO) VALUES (12345678A, 'Cafe Caracol', 20, '2.5');
+INSERT INTO PRODUCTOS(IDPRODUCTOS, NOMBRE, STOCK, PRECIO) VALUES (12345678, 'Cafe Caracol', 20, '2.5');
 
 COMMIT;
 
