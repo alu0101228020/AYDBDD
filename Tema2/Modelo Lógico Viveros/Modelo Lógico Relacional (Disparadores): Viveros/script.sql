@@ -145,7 +145,7 @@ CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas
 	BEGIN 
 		IF NEW.municipio IS NULL THEN RAISE EXCEPTION 'Municipio vacío';
 		END IF;
-		IF NEW.vivienda IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
+		IF NEW.direccion IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
 		END IF;
 		IF NEW.municipio IN (SELECT d.municipio
 					FROM DOMICILIO d
