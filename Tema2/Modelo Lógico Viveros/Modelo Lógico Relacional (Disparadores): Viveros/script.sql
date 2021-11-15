@@ -140,7 +140,7 @@ CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas
 			END IF; 
 		END IF;
 		IF EXISTS
-		SELECT COUNT(NEW.municipio)
+		SELECT NEW.Municipio, COUNT(DISTINCT NEW.municipio)
 		FROM CLIENTE
 		GROUP BY NEW.municipio
 		HAVING COUNT(NEW.municipio)>1
