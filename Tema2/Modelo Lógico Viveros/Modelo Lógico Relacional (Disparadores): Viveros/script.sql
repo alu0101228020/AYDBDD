@@ -147,9 +147,9 @@ CREATE TRIGGER trigger_check_viviendas_before_insert BEFORE INSERT OR UPDATE ON 
 CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_stock$
 	BEGIN
 		IF NEW.cantidad > 0 THEN
-			UPDATE PRODUCTO
-			SET PRODUCTO.stock = PRODUCTO.stock-NEW.cantidad
-			WHERE PRODUCTO.idProductos = NEW.idProductos;
+			UPDATE PRODUCTOS
+			SET PRODUCTOS.stock = PRODUCTO.stock-NEW.cantidad
+			WHERE PRODUCTOS.idProductos = NEW.idProductos;
 		END IF;
 	END;
 $actualizar_stock$ LANGUAGE plpgsql;
