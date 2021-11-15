@@ -139,6 +139,7 @@ CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas
 				RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
 			END IF; 
 		END IF;
+		RETURN NEW;
 		END;
 $check_viviendas$ LANGUAGE plpgsql;
 
@@ -150,6 +151,7 @@ CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_sto
 			UPDATE PRODUCTOS SET (stock) = (stock - NEW.cantidad)
   			WHERE idProductos = NEW.idProductos;
 		END IF;
+		RETURN NEW;
 	END;
 $actualizar_stock$ LANGUAGE plpgsql;
 
