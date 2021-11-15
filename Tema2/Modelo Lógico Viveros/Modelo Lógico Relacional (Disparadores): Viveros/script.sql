@@ -139,13 +139,6 @@ CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas
 				RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
 			END IF; 
 		END IF;
-		IF EXISTS
-		SELECT NEW.Municipio, COUNT(DISTINCT NEW.municipio)
-		FROM CLIENTE
-		GROUP BY NEW.municipio
-		HAVING COUNT(NEW.municipio)>1
-		THEN RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
-		END IF;
 		END;
 $check_viviendas$ LANGUAGE plpgsql;
 
