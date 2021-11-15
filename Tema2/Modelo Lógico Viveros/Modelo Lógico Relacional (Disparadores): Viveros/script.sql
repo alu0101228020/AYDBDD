@@ -149,7 +149,7 @@ CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_sto
 	BEGIN
 		IF (NEW.cantidad > 0) THEN
 			UPDATE PRODUCTOS SET (stock) = (stock - NEW.cantidad)
-  			WHERE idProductos = NEW.idProductos;
+  			WHERE idProductos = NEW.productos_idProductos;
 		END IF;
 		RETURN NEW;
 	END;
