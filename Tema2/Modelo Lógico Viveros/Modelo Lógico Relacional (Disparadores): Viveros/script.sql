@@ -148,8 +148,8 @@ CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_sto
 	BEGIN
 		IF NEW.cantidad > 0 THEN
 			UPDATE PRODUCTOS
-			SET PRODUCTOS.stock = PRODUCTOS.stock-NEW.cantidad,
-			WHERE PRODUCTOS.idProductos = NEW.idProductos;
+			SET stock = stock-NEW.cantidad
+			WHERE idProductos = NEW.idProductos;
 		END IF;
 	END;
 $actualizar_stock$ LANGUAGE plpgsql;
