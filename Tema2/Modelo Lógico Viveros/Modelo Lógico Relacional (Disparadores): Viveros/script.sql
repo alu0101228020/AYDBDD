@@ -143,7 +143,7 @@ CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas
 		SELECT NEW.municipio, COUNT(NEW.municipio)
 		FROM CLIENTE
 		GROUP BY NEW.municipio
-		HAVING COUNT(NEW.municipio)>1;
+		HAVING COUNT(NEW.municipio)>1
 		THEN RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
 		END IF;
 		END;
