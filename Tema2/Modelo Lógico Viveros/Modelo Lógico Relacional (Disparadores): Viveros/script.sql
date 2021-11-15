@@ -131,9 +131,9 @@ FOR EACH ROW EXECUTE PROCEDURE crear_email("gmail.com");
 CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas$
 	BEGIN 
 		IF NEW.municipio IS NULL THEN RAISE EXCEPTION 'Municipio vacío';
-		ENDIF;
+		END IF;
 		IF NEW.vivienda IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
-		ENDIF;
+		END IF;
 		IF COUNT(NEW.vivienda) > 1 THEN
 			IF COUNT DISTINCT(NEW.municipio) = 1 THEN
 				RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
@@ -144,8 +144,8 @@ CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas
 		GROUP BY NEW.municipio
 		HAVING COUNT(NEW.municipio)>1
 		THEN RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
-		ENDIF;
-		ENDIF;
+		END IF;
+		END IF;
 		END;
 $check_viviendas$ LANGUAGE plpgsql;
 
@@ -157,7 +157,7 @@ CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_sto
 			UPDATE PRODUCTO,
 			SET PRODUCTO.stock = PRODUCTO.stock-NEW.cantidad,
 			WHERE PRODUCTO.idProductos = NEW.idProductos;
-		ENDIF;
+		END IF;
 	END;
 $actualizar_stock$ LANGUAGE plpgsql;
 
