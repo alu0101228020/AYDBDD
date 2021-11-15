@@ -154,7 +154,7 @@ CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_sto
 $actualizar_stock$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_actualizar_stock BEFORE INSERT ON COMPRA
-FOR EACH ROW EXECUTE PROCEDURE actualizr_stock();
+FOR EACH ROW EXECUTE PROCEDURE actualizar_stock();
 
 START TRANSACTION;
 INSERT INTO VIVEROS (NOMBRE, LOCALIDAD, LATITUD, LONGITUD) VALUES ('Flores Pepe', 'La Laguna', '026', '014');
