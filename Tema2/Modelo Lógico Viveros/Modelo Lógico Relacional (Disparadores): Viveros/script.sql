@@ -135,7 +135,7 @@ CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas
 		IF NEW.vivienda IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
 		END IF;
 		IF COUNT(NEW.vivienda) > 1 THEN
-			IF COUNT DISTINCT(NEW.municipio) = 1 THEN
+			IF COUNT (DISTINCT NEW.municipio) = 1 THEN
 				RAISE EXCEPTION 'No puede haber más de una vivienda en el mismo municipio';
 		ENDIF
 		IF EXISTS
