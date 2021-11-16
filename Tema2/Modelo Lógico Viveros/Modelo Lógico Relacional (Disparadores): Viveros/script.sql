@@ -129,10 +129,6 @@ CREATE OR REPLACE FUNCTION crear_email() RETURNS TRIGGER AS $crear_email$
       IF NEW.EMAIL IS NULL THEN
         NEW.EMAIL := CONCAT(lower(NEW.NOMBRE), REGEXP_REPLACE(lower(NEW.APELLIDOS), '\s+', ''), '@', TG_ARGV[0]);
       END IF;
-      
-      IF NEW.EMAIL LIKE '/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g' THEN
-        RAISE EXCEPTION 'El email introducido no es valido, la estructura del email deberia ser "example@domain.com"';
-      END IF;
       RETURN NEW;
    END;
 $crear_email$ LANGUAGE plpgsql;
@@ -144,8 +140,10 @@ CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas
    BEGIN 
       IF NEW.municipio IS NULL THEN RAISE EXCEPTION 'Municipio vacío';
       END IF;
+      
       IF NEW.direccion IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
       END IF;
+      
       IF NEW.municipio IN (SELECT d.municipio
 		           FROM DOMICILIO d
 			   WHERE d.cliente_dni = NEW.cliente_dni) THEN
