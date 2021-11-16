@@ -1,6 +1,5 @@
 START TRANSACTION;
 
-
 CREATE SCHEMA public;
 
 DROP TABLE IF EXISTS VIVEROS ;
@@ -139,33 +138,34 @@ CREATE TRIGGER trigger_crear_email_before_insert BEFORE INSERT ON CLIENTE
 FOR EACH ROW EXECUTE PROCEDURE crear_email("gmail.com");
 
 CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas$
-	BEGIN 
-		IF NEW.municipio IS NULL THEN RAISE EXCEPTION 'Municipio vacío';
-		END IF;
-		IF NEW.direccion IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
-		END IF;
-		IF NEW.municipio IN (SELECT d.municipio
-					FROM DOMICILIO d
-					WHERE d.cliente_dni = NEW.cliente_dni) THEN
-					RAISE EXCEPTION 'No puede tener dos viviendas en el mismo municipio';
-		END IF;
-		RETURN NEW;
-		END;
+   BEGIN 
+      IF NEW.municipio IS NULL THEN RAISE EXCEPTION 'Municipio vacío';
+      END IF;
+      IF NEW.direccion IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
+      END IF;
+      IF NEW.municipio IN (SELECT d.municipio
+		           FROM DOMICILIO d
+			   WHERE d.cliente_dni = NEW.cliente_dni) THEN
+			   RAISE EXCEPTION 'No puede tener dos viviendas en el mismo municipio';
+      END IF;
+      RETURN NEW;
+   END;
 $check_viviendas$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_check_viviendas_before_insert BEFORE INSERT OR UPDATE ON DOMICILIO FOR EACH ROW EXECUTE PROCEDURE check_viviendas();
+CREATE TRIGGER trigger_check_viviendas_before_insert BEFORE INSERT OR UPDATE ON DOMICILIO 
+FOR EACH ROW EXECUTE PROCEDURE check_viviendas();
 
 CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_stock$
-	BEGIN
-		IF (NEW.cantidad > 0) THEN
-			UPDATE PRODUCTOS SET stock = stock - NEW.cantidad
-  			WHERE idProductos = NEW.productos_idProductos;
-		END IF;
-		RETURN NEW;
-	END;
+   BEGIN
+      IF (NEW.cantidad > 0) THEN
+         UPDATE PRODUCTOS SET stock = stock - NEW.cantidad
+  	 WHERE idProductos = NEW.productos_idProductos;
+      END IF;
+      RETURN NEW;
+   END;
 $actualizar_stock$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_actualizar_stock BEFORE INSERT ON COMPRA
+CREATE TRIGGER trigger_actualizar_stock_before_insert BEFORE INSERT ON COMPRA
 FOR EACH ROW EXECUTE PROCEDURE actualizar_stock();
 
 START TRANSACTION;
