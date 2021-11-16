@@ -138,15 +138,15 @@ FOR EACH ROW EXECUTE PROCEDURE crear_email("gmail.com");
 
 CREATE OR REPLACE FUNCTION check_viviendas() RETURNS TRIGGER AS $check_viviendas$
    BEGIN 
-      IF NEW.municipio IS NULL THEN RAISE EXCEPTION 'Municipio vacío';
+      IF NEW.MUNICIPIO IS NULL THEN RAISE EXCEPTION 'Municipio vacío';
       END IF;
       
-      IF NEW.direccion IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
+      IF NEW.DIRECCION IS NULL THEN RAISE EXCEPTION 'Vivienda vacía';
       END IF;
       
-      IF NEW.municipio IN (SELECT d.municipio
-		           FROM DOMICILIO d
-			   WHERE d.cliente_dni = NEW.cliente_dni) THEN
+      IF NEW.MUNICIPIO IN (SELECT D.MUNICIPIO
+		           FROM DOMICILIO D
+			   WHERE D.CLIENTE_DNI = NEW.CLIENTE_DNI) THEN
 			   RAISE EXCEPTION 'No puede tener dos viviendas en el mismo municipio';
       END IF;
       RETURN NEW;
@@ -158,9 +158,9 @@ FOR EACH ROW EXECUTE PROCEDURE check_viviendas();
 
 CREATE OR REPLACE FUNCTION actualizar_stock() RETURNS TRIGGER AS $actualizar_stock$
    BEGIN
-      IF (NEW.cantidad > 0) THEN
-         UPDATE PRODUCTOS SET stock = stock - NEW.cantidad
-  	 WHERE idProductos = NEW.productos_idProductos;
+      IF (NEW.CANTIDAD > 0) THEN
+         UPDATE PRODUCTOS SET STOCK = STOCK - NEW.CANTIDAD
+  	 WHERE IDPRODUCTOS = NEW.PRODUCTOS_IDPRODUCTOS;
       END IF;
       RETURN NEW;
    END;
