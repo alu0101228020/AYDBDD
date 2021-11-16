@@ -128,8 +128,9 @@ CREATE OR REPLACE FUNCTION crear_email() RETURNS TRIGGER AS $crear_email$
    BEGIN
       IF NEW.EMAIL IS NULL THEN
         NEW.EMAIL := CONCAT(lower(NEW.NOMBRE), REGEXP_REPLACE(lower(NEW.APELLIDOS), '\s+', ''), '@', TG_ARGV[0]);
+      END IF;
       
-      ELSIF NEW.EMAIL LIKE '/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/' THEN
+      IF NEW.EMAIL LIKE '/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g' THEN
         RAISE EXCEPTION 'El email introducido no es valido, la estructura del email deberia ser "example@domain.com"';
       END IF;
       RETURN NEW;
